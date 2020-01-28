@@ -68,4 +68,11 @@ class Pelicula {
     overview         = json['overview'];
     releaseDate      = json['release_date'];
   }
+
+  getPosterImg(){
+
+    if(posterPath == null)
+    return 'https://upload.wikimedia.org/wikipedia/commons/d/da/Imagen_no_disponible.svg';
+    return 'https://image.tmdb.org/t/p/w500/$posterPath';
+  }
 }
