@@ -40,18 +40,22 @@ class RowMovies extends StatelessWidget {
 
   Widget _crearTarjeta(BuildContext context, Pelicula pelicula){
 
+    pelicula.uniqueId = '${pelicula.id}-row';
+
     final tarjeta = Container(
         margin: EdgeInsets.only(right: 15.0),
         child: Column(
           children: <Widget>[
-            ClipRRect(
-              borderRadius: BorderRadius.circular(20.0),
-              child: FadeInImage(
-                image: NetworkImage(pelicula.getPosterImg()),
-                placeholder: AssetImage('assets/no-image.jpg'),
-                fit: BoxFit.cover,
-                height: 141.0,
-              ),
+            Hero(
+                child: ClipRRect(
+                borderRadius: BorderRadius.circular(20.0),
+                child: FadeInImage(
+                  image: NetworkImage(pelicula.getPosterImg()),
+                  placeholder: AssetImage('assets/no-image.jpg'),
+                  fit: BoxFit.cover,
+                  height: 141.0,
+                ),
+              ), tag: pelicula.uniqueId,
             ),
             SizedBox(height: 3.0),
             Text(
