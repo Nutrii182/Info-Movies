@@ -1,21 +1,33 @@
 
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:movies/src/models/actors_model.dart';
 import 'package:movies/src/models/movie_model.dart';
 
 class PeliculasProvider{
 
   String _apikey = '4ca37625da28dedd7eadaecc54613217';
   String _url = 'api.themoviedb.org';
-  String _language = 'es-ES';
+  String _language = 'es-MX';
 
-  Future<List<Pelicula>> getEnCines() async{
+  int _popularesPage = 0;
+  bool _loading = false;
 
-    final url = Uri.https(_url, '3/movie/now_playing',{
-      'api_key' : _apikey,
-      'language' : _language
-    });
+  List<Pelicula> _populares = new List();
+
+  final _popularesStreamController = StreamController<List<Pelicula>>.broadcast();
+
+  Function(List<Pelicula>) get popularesSink => _popularesStreamController.sink.add;
+
+  Stream<List<Pelicula>> get popularesStream => _popularesStreamController.stream;
+
+  void disposeStreams(){
+    _popularesStreamController?.close();
+  }
+
+  Future<List<Pelicula>> _procesarRespuesta(Uri url) async{
 
     final resp = await http.get(url);
     final decodeData = json.decode(resp.body);
@@ -24,4 +36,52 @@ class PeliculasProvider{
 
     return peliculas.items;
   }
+
+  Future<List<Pelicula>> getEnCines() async{
+
+    final url = Uri.https(_url, '3/movie/now_playing',{
+      'api_key' : _apikey,
+      'language' : _language
+    });
+
+    return await _procesarRespuesta(url);
+  }
+
+  Future<List<Pelicula>> getPopulares() async{
+
+    if(_loading) return [];
+
+    _loading = true;
+
+    _popularesPage++;
+
+    final url = Uri.https(_url, '3/movie/popular',{
+      'api_key' : _apikey,
+      'language' : _language,
+      'page' : _popularesPage.toString(),
+    });
+
+    final resp = await _procesarRespuesta(url);
+
+    _populares.addAll(resp);
+    popularesSink(_populares);
+
+    _loading = false;
+    return resp;
+  }
+
+  Future<List<Actor>> getCast(String peliId) async{
+
+    final url = Uri.https(_url, '3/movie/$peliId/credits',{
+      'api_key' : _apikey,
+      'language' : _language
+    });
+
+    final resp = await http.get(url);
+    final decodedData = json.decode(resp.body);
+    final cast = new Cast.fromJsonList(decodedData['cast']);
+
+    return cast.actors;
+  }
+
 }
