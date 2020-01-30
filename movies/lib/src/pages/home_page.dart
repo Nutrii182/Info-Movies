@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:movies/src/providers/peliculas.dart';
+import 'package:movies/src/search/search_delegate.dart';
 import 'package:movies/src/widgets/card_swiper.dart';
 import 'package:movies/src/widgets/row_movies.dart';
 
@@ -20,7 +21,12 @@ class HomePage extends StatelessWidget {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.search ),
-            onPressed: () {},
+            onPressed: () {
+              showSearch(
+                context: context,
+                delegate: DataSearch()
+              );
+            },
           )
         ],
       ),
@@ -66,7 +72,7 @@ class HomePage extends StatelessWidget {
             child: Text('Populares',
             style: Theme.of(context).textTheme.subhead)
           ),
-          SizedBox(height: 3.0),
+          SizedBox(height: 1.0),
 
           StreamBuilder(
             stream: peliProvider.popularesStream,

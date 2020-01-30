@@ -75,14 +75,14 @@ class Pelicula {
   getPosterImg(){
 
     if(posterPath == null)
-      return 'https://upload.wikimedia.org/wikipedia/commons/d/da/Imagen_no_disponible.svg';
+      return 'http://caprobi.org.mx/wp-content/uploads/2019/05/imagen-no-disponible.jpg';
     return 'https://image.tmdb.org/t/p/w500/$posterPath';
   }
 
   getBackgroundImg(){
 
     if(backdropPath == null)
-      return 'https://upload.wikimedia.org/wikipedia/commons/d/da/Imagen_no_disponible.svg';
+      return 'http://caprobi.org.mx/wp-content/uploads/2019/05/imagen-no-disponible.jpg';
     return 'https://image.tmdb.org/t/p/w500/$backdropPath';
   }
 }
